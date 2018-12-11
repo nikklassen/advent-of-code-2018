@@ -1,0 +1,33 @@
+name:                AoC2018
+version:             0.1.0.0
+github:              "nikklassen/advent-of-code-2018"
+license:             MIT
+author:              "Nik Klassen"
+maintainer:          "contact@nikklassen.ca"
+copyright:           "2018 Nik Klassen"
+
+extra-source-files:
+  - README.md
+
+description:         Please see the README on GitHub at <https://github.com/nikklassen/advent-of-code-2018#readme>
+
+dependencies:
+  - base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+    - regex-tdfa
+    - containers
+
+executables:
+  aoc2018-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -O2
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - AoC2018
