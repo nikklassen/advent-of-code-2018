@@ -1,14 +1,12 @@
 {-# LANGUAGE BangPatterns #-}
 module Lib.Day9 where
 
+import Lib.Util (doTimes)
 import Lib.Zipper (Zipper)
 import qualified Lib.Zipper as Z
 
 posMod :: Integral i => i -> i -> i
 posMod x n = let m = x `rem` n in if m < 0 then n + m else m
-
-doTimes 0 f x = x
-doTimes n f x  = doTimes (n - 1) f (f x)
 
 placeMarble :: (Int, Zipper Int, Zipper Int) -> (Int, Zipper Int, Zipper Int)
 placeMarble (n, !marbles, !scores) =

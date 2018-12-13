@@ -1,5 +1,6 @@
 module Lib.Util where
 
+import Text.Regex.TDFA ((=~))
 import qualified Data.List as L
 import Data.Function (on)
 import Debug.Trace (trace)
@@ -24,3 +25,16 @@ mapSnd f (a, b) = (a, f b)
 
 (!!?) :: [a] -> Int -> Maybe a
 (!!?) xs i = if i < length xs then Just (xs !! i) else Nothing
+
+getMatches :: String -> String -> [String]
+getMatches p s = tail $ head $ s =~ p
+
+getMatchesAs :: Read a => String -> String -> [a]
+getMatchesAs p s = map read $ tail $ head $ s =~ p
+
+doTimes 0 f x = x
+doTimes n f x  = doTimes (n - 1) f (f x)
+
+dropBackWhile f [] = []
+dropBackWhile f [a] = if f a then [] else [a]
+dropBackWhile f (a:as) = let bs = dropBackWhile f as in if null bs && f a then [] else a:bs
