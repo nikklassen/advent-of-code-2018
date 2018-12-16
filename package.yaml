@@ -14,12 +14,25 @@ description:         Please see the README on GitHub at <https://github.com/nikk
 dependencies:
   - base >= 4.7 && < 5
 
+ghc-options:
+  - -Wall
+  - -Wno-missing-signatures
+  - -Wcompat
+  - -Wredundant-constraints
+
+default-extensions:
+  - NamedFieldPuns
+  - FlexibleContexts
+  - TupleSections
+  - BangPatterns
+
 library:
   source-dirs: src
   dependencies:
     - regex-tdfa
     - containers
     - QuickCheck
+    - extra
 
 executables:
   aoc2018-exe:
