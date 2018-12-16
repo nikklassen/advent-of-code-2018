@@ -32,6 +32,7 @@ getMatches p s = tail $ head $ s =~ p
 getMatchesAs :: Read a => String -> String -> [a]
 getMatchesAs p s = map read $ tail $ head $ s =~ p
 
+doTimes :: (Eq n, Num n) => n -> (a -> a) -> a -> a
 doTimes 0 f x = x
 doTimes n f x  = doTimes (n - 1) f (f x)
 

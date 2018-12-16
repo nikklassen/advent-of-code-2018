@@ -29,15 +29,29 @@ Modifications:
 --}
 module Lib.Zipper where
 
+import Control.Monad (liftM2)
+import Test.QuickCheck (Arbitrary(..), CoArbitrary(..))
 import Data.Sequence
+import qualified Data.Sequence as S
 import Data.Foldable (toList)
+import Lib.Util (doTimes)
 
 data Zipper a = Zip (Seq a) (Seq a) deriving (Eq,Show)
+
+instance Arbitrary a => Arbitrary (Zipper a) where
+  arbitrary = liftM2 Zip arbitrary arbitrary
+  shrink (Zip ls rs) = [Zip ls' rs | ls' <- shrink ls] ++ [Zip ls rs' | rs' <- shrink rs]
+
+instance CoArbitrary a => CoArbitrary (Zipper a) where
+  coarbitrary (Zip ls rs) = coarbitrary rs . coarbitrary ls
+
+instance Functor Zipper  where
+  fmap f (Zip ls rs) = Zip (fmap f ls) (fmap f rs)
 
 -- | @fromList xs@ returns a zipper containing the elements of xs,
 -- focused on the first element.
 fromList :: [a] -> Zipper a
-fromList as = Zip empty (Data.Sequence.fromList as)
+fromList as = Zip empty (S.fromList as)
 
 toList :: Zipper a -> [a]
 toList (Zip ls rs) = Data.Foldable.toList $ ls >< rs
@@ -73,7 +87,7 @@ left  z               = z
 
 leftWrap :: Zipper a -> Zipper a
 leftWrap  (Zip (ls:|>a) rs) = Zip ls (a<|rs)
-leftWrap  (Zip empty (rs:|>a)) = Zip rs (singleton a)
+leftWrap  (Zip Empty (rs:|>a)) = Zip rs (singleton a)
 
 -- | @right z@ returns the zipper with the focus
 -- shifted right one element; this can move the
@@ -83,8 +97,8 @@ right (Zip ls (a:<|rs)) = Zip (ls|>a) rs
 right z               = z
 
 rightWrap :: Zipper a -> Zipper a
+rightWrap (Zip ls (a:<|Empty)) = Zip empty (ls|>a)
 rightWrap (Zip ls (a:<|rs)) = Zip (ls|>a) rs
-rightWrap (Zip (a:<|ls) empty) = Zip (singleton a) ls
 
 -- | @insert x z@ adds x at the cursor.
 insert :: a -> Zipper a -> Zipper a
@@ -104,3 +118,18 @@ delete z               = z
 replace :: a -> Zipper a -> Zipper a
 replace a (Zip ls (_:<|rs)) = Zip ls (a<|rs)
 replace _ z               = z
+
+-- Functions added by Nik
+
+length :: Zipper a -> Int
+length (Zip ls rs) = S.length ls + S.length rs
+
+setCursor :: Show a => Int -> Zipper a -> Zipper a
+setCursor n z@(Zip ls rs)
+    | n == m = z
+    | n < m = doTimes (m - n) left z
+    | otherwise = doTimes (n - m) rightWrap z
+    where m = S.length ls
+
+pushBack :: [a] -> Zipper a -> Zipper a
+pushBack a z@(Zip ls rs) = Zip ls (rs >< S.fromList a)
