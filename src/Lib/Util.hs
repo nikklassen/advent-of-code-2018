@@ -23,6 +23,12 @@ mapFst f (a, c) = (f a, c)
 mapSnd :: (b -> c) -> (a, b) -> (a, c)
 mapSnd f (a, b) = (a, f b)
 
+fst3 :: (a, b, c) -> a
+fst3 (a, _, _) = a
+
+thd :: (a, b, c) -> c
+thd (_, _, c) = c
+
 (!!?) :: [a] -> Int -> Maybe a
 (!!?) xs i = if i < length xs then Just (xs !! i) else Nothing
 
