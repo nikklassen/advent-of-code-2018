@@ -33,6 +33,7 @@ library:
     - containers
     - QuickCheck
     - extra
+    - lens
 
 executables:
   aoc2018-exe:
