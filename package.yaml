@@ -17,6 +17,7 @@ dependencies:
 ghc-options:
   - -Wall
   - -Wno-missing-signatures
+  - -Wno-type-defaults
   - -Wcompat
   - -Wredundant-constraints
 
@@ -25,6 +26,8 @@ default-extensions:
   - FlexibleContexts
   - TupleSections
   - BangPatterns
+  - TemplateHaskell
+  - QuasiQuotes
 
 library:
   source-dirs: src
@@ -34,6 +37,8 @@ library:
     - QuickCheck
     - extra
     - lens
+    - linear
+    - here
 
 executables:
   aoc2018-exe:
